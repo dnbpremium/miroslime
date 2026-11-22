@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MIROSLIME</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Instrument+Serif:ital@0;1&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#050507;--white:#f2f4f6;--ice:#a9bdd0;--line:#d6dbe0;--mute:#6f7782;--serif:'Instrument Serif',Georgia,serif;--sans:'Jost',system-ui,sans-serif;--brut:'Big Shoulders Display','Arial Narrow',Impact,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);font-weight:300;background:var(--white);color:var(--ink);padding-bottom:70px}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+:focus-visible{outline:1px solid var(--ice);outline-offset:3px}
+
+/* top bar */
+.top{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:22px clamp(20px,4vw,56px);color:#fff;mix-blend-mode:difference}
+.brand{font-family:var(--brut);font-size:1.4rem;letter-spacing:.2em;font-weight:900}
+.cartbtn{font-size:.85rem;letter-spacing:.2em;display:flex;gap:12px;align-items:center}
+.cartbtn b{font-weight:400;min-width:22px;height:22px;border:1px solid currentColor;border-radius:50%;display:grid;place-items:center;font-size:.72rem;letter-spacing:0}
+
+/* hero */
+.hero{position:relative;min-height:100svh;background:#050507;color:#f2f4f6;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;overflow:hidden;padding:110px 20px 90px}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 70% at 50% 0%,rgba(169,189,208,.14),transparent 60%)}
+.hero h1{position:relative;font-family:var(--brut);font-weight:900;text-transform:uppercase;font-size:min(24vw,23rem);line-height:.82;letter-spacing:-.01em;
+ background:linear-gradient(100deg,#59616c 0%,#59616c 30%,#fff 45%,#fff 55%,#59616c 70%,#59616c 100%);background-size:250% 100%;
+ -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+ animation:reveal 1.3s cubic-bezier(.7,0,.2,1) both,sweep 7s ease-in-out 1.3s infinite}
+@keyframes reveal{from{clip-path:inset(0 0 100% 0);transform:translateY(40px)}to{clip-path:inset(0);transform:none}}
+@keyframes sweep{0%{background-position:100% 0}60%,100%{background-position:0 0}}
+.hero p{position:relative;margin-top:34px;font-size:.95rem;letter-spacing:.35em;color:var(--ice);animation:fade 1s ease 1.2s both}
+.go{position:relative;display:inline-block;margin-top:44px;padding:18px 48px;border:1px solid #fff;color:#fff;font-size:.8rem;letter-spacing:.3em;transition:.4s;text-decoration:none;animation:fade 1s ease 1.5s both}
+.go:hover{background:#fff;color:#000}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.hline{position:absolute;left:clamp(20px,4vw,56px);right:clamp(20px,4vw,56px);bottom:28px;display:flex;justify-content:space-between;font-size:.75rem;letter-spacing:.3em;color:#8b95a1;border-top:1px solid #2a2e35;padding-top:16px}
+
+/* menu */
+.menu{max-width:1180px;margin:0 auto;padding:110px clamp(20px,4vw,56px) 40px}
+.menu-h{font-family:var(--brut);font-weight:900;text-transform:uppercase;font-size:clamp(2.6rem,7vw,5.5rem);line-height:.95;max-width:14ch}
+.menu-s{margin-top:16px;color:var(--mute);max-width:46ch;line-height:1.7}
+.cuis{display:flex;gap:clamp(24px,5vw,64px);margin:64px 0 28px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.cui{font-family:var(--brut);font-weight:800;text-transform:uppercase;font-size:clamp(2rem,5vw,3.6rem);color:#aab0b8;padding-bottom:14px;margin-bottom:-1px;border-bottom:1px solid transparent;transition:.3s}
+.cui:hover{color:var(--ink)}
+.cui.on{color:var(--ink);border-bottom-color:var(--ink)}
+.tags{display:flex;gap:26px;flex-wrap:wrap;margin-bottom:36px}
+.tag{font-size:.9rem;color:var(--mute);padding:4px 0;border-bottom:1px solid transparent;transition:.3s}
+.tag:hover{color:var(--ink)}
+.tag.on{color:var(--ink);border-bottom-color:var(--ice)}
+.group{margin-bottom:56px}
+.group>h3{font-family:var(--serif);font-style:italic;font-weight:400;font-size:1.5rem;color:var(--mute);margin-bottom:6px}
+.dish{display:grid;grid-template-columns:1fr auto auto;gap:8px 28px;align-items:baseline;padding:22px 0;border-top:1px solid var(--line)}
+.dish:last-child{border-bottom:1px solid var(--line)}
+.dish h4{font-family:var(--serif);font-weight:400;font-size:clamp(1.35rem,2.4vw,1.8rem);line-height:1.15}
+.dish p{grid-column:1;color:var(--mute);line-height:1.6;font-size:.95rem;max-width:60ch}
+.dish .w{grid-column:1;font-size:.8rem;color:#9aa1aa}
+.price{grid-column:2;grid-row:1;font-size:1.1rem;font-weight:400;white-space:nowrap}
+.add{grid-column:3;grid-row:1;width:38px;height:38px;border:1px solid var(--ink);border-radius:50%;font-size:1.2rem;line-height:1;transition:.3s;display:grid;place-items:center}
+.add:hover,.add.ok{background:var(--ink);color:var(--white)}
+
+footer{max-width:1180px;margin:60px auto 0;padding:40px clamp(20px,4vw,56px);border-top:1px solid var(--line);color:var(--mute);font-size:.85rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+/* cart */
+.fab{display:none}
+.modal{position:fixed;inset:0;background:rgba(5,5,7,.55);backdrop-filter:blur(4px);display:flex;justify-content:flex-end;z-index:40;opacity:0;pointer-events:none;transition:opacity .35s}
+.modal.open{opacity:1;pointer-events:auto}
+.drawer{width:100%;max-width:440px;height:100%;background:var(--white);padding:32px;display:flex;flex-direction:column;transform:translateX(30px);transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+.modal.open .drawer{transform:none}
+.d-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.d-head h3{font-family:var(--serif);font-weight:400;font-size:2rem}
+.x{width:36px;height:36px;border:1px solid var(--line);border-radius:50%}
+.c-list{flex:1;overflow-y:auto;padding:8px 0}
+.c-item{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;border-bottom:1px solid var(--line)}
+.c-item b{font-family:var(--serif);font-weight:400;font-size:1.2rem;display:block}
+.c-item small{color:var(--mute)}
+.qty{display:flex;align-items:center;gap:12px}
+.q{width:30px;height:30px;border:1px solid var(--line);border-radius:50%}
+.q:hover{border-color:var(--ink)}
+.empty{text-align:center;color:var(--mute);margin-top:60px}
+.d-foot{padding-top:20px;border-top:1px solid var(--line)}
+.tot{display:flex;justify-content:space-between;font-family:var(--serif);font-size:1.7rem;margin-bottom:18px}
+.order{width:100%;padding:18px;background:var(--ink);color:var(--white);letter-spacing:.25em;font-size:.8rem;transition:.3s;border:1px solid var(--ink)}
+.order:hover{background:none;color:var(--ink)}
+#msg{margin-top:14px;color:var(--mute);font-size:.9rem;min-height:1.2em}
+
+@media(max-width:600px){
+ .dish{grid-template-columns:1fr auto}
+ .price{grid-column:2;grid-row:1}
+ .add{grid-column:2;grid-row:2;justify-self:end}
+ .dish .w{grid-row:3}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+
+[data-theme=dark]{--white:#0c0d10;--ink:#f2f4f6;--line:#262a31;--mute:#8b95a1}
+body{transition:background .4s,color .4s}
+.nav{display:flex;gap:22px;align-items:center;font-size:.78rem;letter-spacing:.2em}
+.nav a{color:inherit;text-decoration:none}
+.tg{border:1px solid currentColor;padding:4px 10px;font-size:.72rem;letter-spacing:.15em}
+@media(max-width:760px){.nav a{display:none}.nav{gap:12px}}
+.sec{max-width:1180px;margin:0 auto;padding:90px clamp(20px,4vw,56px) 20px;border-top:1px solid var(--line)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:40px;align-items:start}
+@media(max-width:800px){.two{grid-template-columns:1fr;gap:28px}}
+.lbl{font-size:.8rem;color:var(--mute);margin:24px 0 10px}.lbl:first-child{margin-top:0}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);padding:10px 16px;font-size:.9rem;transition:.2s}
+.chip:hover{border-color:var(--ink)}
+.chip.on{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.fld{width:100%;padding:14px 0;background:none;border:none;border-bottom:1px solid var(--line);color:var(--ink);font:inherit;font-size:1rem;outline:none;resize:none}
+.fld:focus{border-bottom-color:var(--ice)}
+.step{display:inline-flex;gap:16px;align-items:center;font-size:1.2rem}
+.step button{width:36px;height:36px;border:1px solid var(--ink);border-radius:50%}
+.cta{margin:26px 10px 0 0;padding:16px 30px;background:var(--ink);color:var(--white);letter-spacing:.22em;font-size:.75rem;border:1px solid var(--ink);transition:.3s}
+.cta:hover{background:none;color:var(--ink)}
+.cta.alt{background:none;color:var(--ink)}.cta.alt:hover{background:var(--ink);color:var(--white)}
+.note{margin-top:16px;color:var(--mute);font-size:.9rem;min-height:1.3em}
+.gift{background:#050507;color:#f2f4f6;padding:30px;min-height:290px;display:flex;flex-direction:column;justify-content:space-between;border:1px solid #2a2e35}
+.gift .amt{font-family:var(--brut);font-weight:900;font-size:clamp(3.5rem,9vw,6rem);line-height:.9;background:linear-gradient(100deg,#6c7480,#fff,#6c7480);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.gift .br{font-family:var(--brut);font-weight:900;letter-spacing:.3em;font-size:1rem;color:#a9bdd0}
+.gift .to{font-family:var(--serif);font-size:1.5rem}.gift .m{font-size:.9rem;color:#8b95a1;margin-top:6px;line-height:1.5}
+.pair{grid-column:1;font-size:.85rem;color:var(--mute);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pair b{font-weight:400;color:var(--ink)}
+.pair button{border:1px solid var(--line);padding:3px 10px;font-size:.75rem;transition:.2s}
+.pair button:hover{border-color:var(--ink)}
+
+.chk{display:flex;gap:10px;align-items:center;margin-bottom:12px;font-size:.9rem}.chk b{margin-left:auto;font-weight:400}
+.dish.stop{opacity:.4}.dish.stop .add{pointer-events:none}
+.rev{padding:18px 0;border-top:1px solid var(--line);display:flex;gap:16px}
+.rev img,.rev .av{width:52px;height:52px;object-fit:cover;border-radius:50%;background:var(--line);display:grid;place-items:center;flex:none}
+.st{color:var(--ice);letter-spacing:2px}
+.trk{display:flex;flex-direction:column;gap:8px;margin-top:12px;font-size:.9rem}.trk span{color:var(--mute)}.trk span.on{color:var(--ink)}
+.bar{height:3px;background:#2a2e35;margin:12px 0}.bar i{display:block;height:3px;background:#a9bdd0}
+.adt{width:100%;border-collapse:collapse;font-size:.9rem;margin-bottom:16px}.adt td{padding:8px 6px;border-top:1px solid var(--line)}
+.adt input[type=number]{width:90px;background:none;border:1px solid var(--line);color:var(--ink);padding:5px}
+</style></head><body>
+<div class="top"><span class="brand">MIROSLIME</span>
+<div class="nav"><a href="#menu" data-i="nav_menu"></a><a href="#book" data-i="nav_book"></a><a href="#gift" data-i="nav_gift"></a><a href="#club" data-i="nav_club"></a>
+<button class="tg" id="snd" onclick="toggleSound()" aria-label="Sound" style="opacity:.5">&#9834;</button><button class="tg" id="langb" onclick="toggleLang()" aria-label="Language">EN</button><button class="tg" onclick="toggleTheme()" aria-label="Theme">&#9680;</button>
+<button class="cartbtn" onclick="toggleCart()" aria-label="Cart"><span data-i="order"></span><b id="cnt">0</b></button></div></div>
+
+<section class="hero"><h1>Miroslime</h1><p data-i="hero_sub"></p><a class="go" href="#menu" data-i="hero_go"></a><div class="hline"><span>RUSSIA</span><span>ITALY</span></div></section>
+
+<main class="menu" id="menu"><h2 class="menu-h" data-i="menu_h"></h2><p class="menu-s" data-i="menu_s"></p>
+<div class="cuis" id="cuis"></div><div class="tags" id="tags"></div><div class="chips" id="diets" style="margin-bottom:12px"></div><p class="note" id="dnote" style="margin:0 0 24px"></p><div id="list"></div></main>
+
+<section class="sec" id="build"><h2 class="menu-h" data-i="bd_h"></h2><p class="menu-s" data-i="bd_s"></p>
+<div class="two"><div><div class="lbl" data-i="bd_c"></div><div class="chips" id="bdc"></div><div class="lbl" data-i="b_guests"></div><div class="step"><button onclick="bdg(-1)" aria-label="-">&minus;</button><span id="bdg">2</span><button onclick="bdg(1)" aria-label="+">+</button></div><div class="lbl" data-i="bd_b"></div><div class="chips" id="bdb"></div><button class="cta alt" onclick="bd.pick=null;drawBuild()" data-i="bd_again"></button></div><div id="bdr"></div></div></section>
+
+<section class="sec" id="book"><h2 class="menu-h" data-i="book_h"></h2>
+<div class="two"><div>
+<div class="lbl" data-i="b_date"></div><div class="chips" id="bdate"></div>
+<div class="lbl" data-i="b_time"></div><div class="chips" id="btime"></div>
+<div class="lbl" data-i="b_guests"></div><div class="step"><button onclick="bg(-1)" aria-label="-">&minus;</button><span id="bgn">2</span><button onclick="bg(1)" aria-label="+">+</button></div>
+</div><div>
+<div class="lbl" data-i="b_zone"></div><div class="chips" id="bzone"></div>
+<div class="lbl" data-i="b_occ"></div><div class="chips" id="bocc"></div>
+<input class="fld" id="bname" data-ph="b_name" style="margin-top:18px"><input class="fld" id="bphone" data-ph="b_phone" type="tel">
+<button class="cta" onclick="sendBook('tg')" data-i="b_tg"></button><button class="cta alt" onclick="sendBook('wa')" data-i="b_wa"></button>
+<button class="cta alt" onclick="bookIcs()" data-i="b_ics"></button><p class="note" id="bnote"></p></div></div></section>
+
+<section class="sec" id="events"><h2 class="menu-h" data-i="ev_h"></h2><div style="margin-top:36px" id="evl"></div></section>
+
+<section class="sec" id="delivery"><h2 class="menu-h" data-i="dv_h"></h2><div class="two"><div><div class="lbl" data-i="dv_addr"></div><input class="fld" id="daddr" data-ph="dv_addr"><div class="lbl"><span data-i="dv_km"></span>: <b id="dkmv">3</b></div><input type="range" id="dkm" min="1" max="15" value="3" oninput="dl.km=+this.value;drawDel()" style="width:100%"><div class="lbl" data-i="dv_time"></div><div class="chips" id="dtime"></div></div>
+<div><div class="lbl" data-i="dv_fee"></div><div class="gift" style="min-height:0;gap:14px"><div class="amt" id="dfeev" style="font-size:3.4rem"></div><div class="m" data-i="dv_free"></div></div></div></div></section>
+
+<section class="sec" id="gift"><h2 class="menu-h" data-i="gift_h"></h2>
+<div class="two"><div class="gift" aria-live="polite"><span class="br">MIROSLIME</span><div><div class="amt" id="gamt"></div></div><div><div class="to" id="gto"></div><div class="m" id="gm"></div></div></div>
+<div><div class="lbl" data-i="g_amt"></div><div class="chips" id="gchips"></div>
+<div class="lbl" data-i="g_to"></div><input class="fld" id="gname" data-ph="g_to" oninput="gdraw()">
+<div class="lbl" data-i="g_msg"></div><textarea class="fld" id="gtext" rows="2" data-ph="g_msg" oninput="gdraw()"></textarea>
+<button class="cta" onclick="gadd()" data-i="g_add"></button></div></div></section>
+
+<section class="sec" id="reviews"><h2 class="menu-h" data-i="rv_h"></h2><div class="two"><div id="rvl"></div><div><input class="fld" id="rname" data-ph="b_name"><div class="lbl" data-i="rv_rate"></div><div class="chips" id="rst"></div><div class="lbl" data-i="rv_text"></div><textarea class="fld" id="rtext" rows="3"></textarea><div class="lbl" data-i="rv_photo"></div><input type="file" id="rfile" accept="image/*" onchange="pickPh(this)"><br><button class="cta" onclick="pubRev()" data-i="rv_send"></button><p class="note" id="rnote"></p></div></div></section>
+
+<section class="sec" id="club"><h2 class="menu-h" data-i="club_h"></h2><p class="menu-s" data-i="club_s"></p>
+<div class="two"><div><input class="fld" id="cmail" data-ph="club_ph"><button class="cta" onclick="join()" data-i="club_btn"></button><p class="note" id="cnote"></p></div><div class="gift" id="loy"></div></div></section>
+
+<section class="sec" id="admin" style="display:none"><h2 class="menu-h" data-i="ad_h"></h2><div id="adb" style="margin-top:30px"></div></section>
+
+<footer><span>MIROSLIME, 2026</span><span data-i="foot"></span><a href="#admin" style="color:inherit;opacity:.4;text-decoration:none">&middot;</a></footer>
+
+<div class="modal" id="modal" onclick="if(event.target===this)toggleCart()"><div class="drawer" role="dialog">
+<div class="d-head"><h3 data-i="cart"></h3><button class="x" onclick="toggleCart()" aria-label="Close">&#10005;</button></div>
+<div class="c-list" id="clist"></div>
+<div class="d-foot"><label class="chk"><input type="checkbox" id="dlv" onchange="upd()"><span data-i="dl_on"></span><b id="dfee"></b></label><div class="tot"><span data-i="total"></span><span id="tot">0 ₽</span></div><button class="order" onclick="order()" data-i="checkout"></button><p id="msg"></p></div></div></div>
+<div class="modal" id="pay" onclick="if(event.target===this)payClose()"><div class="drawer" role="dialog"><div class="d-head"><h3 data-i="pay_h"></h3><button class="x" onclick="payClose()" aria-label="Close">&#10005;</button></div>
+<div style="flex:1"><div class="tot" style="margin-top:20px"><span data-i="total"></span><span id="payamt"></span></div><p class="note" data-i="pay_demo"></p>
+<input class="fld" id="pcard" inputmode="numeric" autocomplete="off" maxlength="19" data-ph="pay_card"><div style="display:flex;gap:20px"><input class="fld" id="pexp" autocomplete="off" maxlength="5" data-ph="pay_exp"><input class="fld" id="pcvc" autocomplete="off" inputmode="numeric" maxlength="3" data-ph="pay_cvc"></div><p class="note" id="perr"></p></div>
+<button class="order" onclick="payGo()" data-i="pay_btn"></button></div></div>
+<script>
+const RAW=[
+['ru','Закуски','Блины с красной икрой','Кружевные блины на топлёном молоке, икра кеты, сметана.','260 г',850],
+['ru','Закуски','Осетровая икра','Чёрная икра, мини-блины, взбитое сливочное масло.','30 г',4900],
+['ru','Закуски','Оливье с камчатским крабом','Классика в современной подаче: краб, перепелиное яйцо, домашний майонез.','180 г',920],
+['ru','Закуски','Сельдь под шубой','Слабосолёная сельдь, свёкла, картофель, морковь: слоями, как в детстве.','170 г',560],
+['ru','Закуски','Холодец из телятины','Прозрачный бульон, хрен, горчица, ржаной тост.','150 г',520],
+['ru','Закуски','Паштет из утиной печени','Брусничный конфитюр, бриошь, морская соль.','120 г',780],
+['ru','Закуски','Грузди солёные','Хрусткие грузди, сметана, лук, укроп.','140 г',480],
+['ru','Супы','Борщ с говядиной','Наваристый бульон, томлёная свёкла, пампушки, сметана.','430 г',690],
+['ru','Супы','Уха из севрюги','Прозрачная уха на трёх рыбах, шафран, ржаной гренок.','400 г',760],
+['ru','Супы','Солянка сборная мясная','Копчёности, оливки, лимон, каперсы, сметана.','400 г',650],
+['ru','Супы','Щи из квашеной капусты','С белыми грибами, томлёные в печи.','380 г',520],
+['ru','Супы','Окрошка на квасе','Холодная, с языком и свежим укропом.','380 г',540],
+['ru','Горячее','Пельмени сибирские','Ручная лепка, три вида мяса, взбитое сливочное масло.','320 г',740],
+['ru','Горячее','Бефстроганов','Мраморная говядина, лесные грибы, картофельное пюре.','330 г',1180],
+['ru','Горячее','Котлета по-киевски','Куриная грудка, масло с зеленью, пюре, соус демиглас.','320 г',890],
+['ru','Горячее','Утка с брусникой','Утиная грудка конфи, печёные яблоки, брусничный соус.','340 г',1290],
+['ru','Горячее','Судак с раковым соусом','Филе на коже, ракушки, сливочный соус, молодой горошек.','300 г',1150],
+['ru','Горячее','Стерлядь на пару','Шампанское, сливки, копчёная икра, овощи на гриле.','320 г',1900],
+['ru','Горячее','Голубцы с телятиной','Нежная телятина, томатный соус, сметана.','330 г',780],
+['ru','Горячее','Вареники с грибами','Картофель, белые грибы, жареный лук, сметана.','290 г',620],
+['ru','Десерты','Медовик','Коржи на гречишном меду, сметанный крем.','160 г',520],
+['ru','Десерты','Наполеон','Тонкое слоёное тесто, ванильный крем.','170 г',540],
+['ru','Десерты','Птичье молоко','Воздушное суфле, тёмный шоколад.','140 г',460],
+['ru','Десерты','Сырники','Фермерский творог, варенье из райских яблок.','200 г',480],
+['ru','Десерты','Пломбир с облепихой','Пломбир на топлёном молоке, облепиховый соус.','150 г',420],
+['it','Закуски','Брускетта с томатами','Чиабатта на гриле, спелые томаты, чеснок, базилик.','190 г',420],
+['it','Закуски','Карпаччо из говядины','Тонкие ломтики, руккола, пармезан, оливковое масло.','160 г',980],
+['it','Закуски','Вителло тоннато','Холодная телятина, соус из тунца, каперсы.','170 г',890],
+['it','Закуски','Буррата с томатами','Сливочная буррата, томаты разных сортов, песто.','220 г',920],
+['it','Закуски','Тартар из тунца','Авокадо, лайм, кунжут, хрустящие чипсы.','150 г',1150],
+['it','Закуски','Прошутто ди Парма','24 месяца выдержки, дыня, свежие травы.','140 г',960],
+['it','Закуски','Креветки в чесночном масле','Тигровые креветки, белое вино, чили, багет.','180 г',1050],
+['it','Паста','Карбонара','Спагетти аль денте, гуанчале, желток, пекорино романо.','310 г',790],
+['it','Паста','Тальятелле с трюфелем','Белые грибы, чёрный трюфель, пармезан.','290 г',1350],
+['it','Паста','Лазанья болоньезе','Рагу из говядины, бешамель, пармезан.','340 г',840],
+['it','Паста','Равиоли с рикоттой','Шпинат, шалфей, сливочное масло.','280 г',890],
+['it','Паста','Ньокки с горгонзолой','Картофельные ньокки, грецкий орех, груша.','300 г',820],
+['it','Паста','Ризотто с шафраном','Карнароли, шафран, костный мозг, пармезан.','320 г',1090],
+['it','Пицца','Маргарита','Тесто 48 часов ферментации, Сан-Марцано, моцарелла.','450 г',690],
+['it','Пицца','Прошутто и руккола','Томаты, фиор ди латте, прошутто, стружка пармезана.','480 г',890],
+['it','Пицца','Кватро формаджи','Моцарелла, горгонзола, пармезан, фонтина.','470 г',840],
+['it','Горячее','Оссобуко по-милански','Телячья голень, гремолата, ризотто с шафраном.','420 г',1690],
+['it','Горячее','Сальтимбокка','Телятина, прошутто, шалфей, белое вино.','280 г',1290],
+['it','Горячее','Дорада на гриле','Целая рыба, лимон, каперсы, тёплый салат из фенхеля.','380 г',1450],
+['it','Горячее','Тальята из говядины','Рибай на гриле, руккола, пармезан, бальзамик.','320 г',1590],
+['it','Горячее','Пармиджана','Запечённые баклажаны, томаты, базилик, моцарелла.','300 г',720],
+['it','Десерты','Тирамису','Савоярди в эспрессо, маскарпоне, тёмное какао.','170 г',560],
+['it','Десерты','Панна-котта','Ваниль, ягодный соус, мята.','150 г',460],
+['it','Десерты','Канноли','Хрустящие трубочки, рикотта, фисташка, цукаты.','140 г',500],
+['it','Десерты','Семифредо','Фисташковое парфе, тёмный шоколад.','130 г',520],
+['it','Десерты','Аффогато','Ванильное джелато, горячий эспрессо.','120 г',420]
+];
+const EN=['Blini with red caviar','Sturgeon caviar','Olivier with king crab','Herring under a fur coat','Veal aspic','Duck liver pâté','Salted milk mushrooms','Beef borscht','Sturgeon ukha','Meat solyanka','Shchi with mushrooms','Okroshka with kvass','Siberian pelmeni','Beef stroganoff','Chicken Kyiv','Duck with lingonberry','Pike-perch, crayfish sauce','Steamed sterlet','Veal cabbage rolls','Mushroom vareniki','Honey cake','Napoleon cake',"Bird's milk cake",'Syrniki','Sea buckthorn ice cream','Tomato bruschetta','Beef carpaccio','Vitello tonnato','Burrata with tomatoes','Tuna tartare','Prosciutto di Parma','Garlic prawns','Carbonara','Tagliatelle with truffle','Lasagna bolognese','Ricotta ravioli','Gorgonzola gnocchi','Saffron risotto','Margherita','Prosciutto and rocket','Quattro formaggi','Osso buco Milanese','Saltimbocca','Grilled sea bream','Beef tagliata','Parmigiana','Tiramisu','Panna cotta','Cannoli','Semifreddo','Affogato'];
+const PR='Champagne Brut|690,Beluga Gold vodka|950,Chablis|720,Riesling Kabinett|640,Beluga vodka|520,Sauternes|890,Russian Standard vodka|480,Saperavi|680,Chablis Premier Cru|790,Pilsner Urquell|420,Rkatsiteli|560,Kvass|290,Cedar vodka|540,Barolo|1100,Burgundy Chardonnay|760,Pinot Noir|820,Pouilly-Fumé|740,Blanc de Blancs|1200,Merlot|620,Light lager|380,Mead|450,Tokaji|780,Moscato d\'Asti|560,Earl Grey tea|320,Sea buckthorn spritz|520,Prosecco|520,Chianti Classico|680,Vermentino|640,Franciacorta|820,Sauvignon Blanc|690,Lambrusco|580,Pinot Grigio|620,Frascati|600,Barbaresco|1300,Sangiovese|640,Vermentino di Gallura|660,Amarone|1100,Verdicchio|700,Peroni|380,Aperol Spritz|520,Soave|620,Barbera d\'Asti|860,Orvieto|650,Gavi|740,Brunello di Montalcino|1400,Primitivo|620,Vin Santo|690,Moscato Rosa|600,Marsala|560,Passito di Pantelleria|760,Espresso Martini|550'.split(',').map(x=>x.split('|'));
+const T={
+ru:{nav_menu:'Меню',nav_book:'Бронь',nav_gift:'Сертификат',nav_club:'Клуб',order:'Заказ',hero_sub:'РУССКАЯ И ИТАЛЬЯНСКАЯ КУХНЯ',hero_go:'ОТКРЫТЬ МЕНЮ',menu_h:'Два стола. Одна история вкуса.',menu_s:'Выберите кухню и соберите свой вечер. К каждому блюду подобран напиток.',pair:'Пара',glass:'+ бокал',book_h:'Забронировать стол',b_date:'Дата',b_time:'Время',b_guests:'Гостей',b_zone:'Где сидим',b_occ:'Повод',b_name:'Ваше имя',b_phone:'Телефон',b_err:'Введите имя и телефон.',b_ok:'Депозит 5 000 ₽ подтвердим в мессенджере.',b_tg:'В TELEGRAM',b_wa:'В WHATSAPP',gift_h:'Подарочный сертификат',g_amt:'Сумма',g_to:'Кому',g_msg:'Пожелание',g_add:'ДОБАВИТЬ В ЗАКАЗ',g_def:'С любовью, за хорошим ужином.',g_for:'Для',g_set:'Сет «Вечер шефа»',g_item:'Сертификат',club_h:'Закрытый клуб',club_s:'Анонсы новых сетов и ужинов раньше всех. Без спама.',club_ph:'Email или @telegram',club_btn:'ВСТУПИТЬ',club_ok:'Вы в списке. Пришлём первый анонс.',club_err:'Введите email или @telegram.',cart:'Ваш заказ',total:'Итого',checkout:'ОФОРМИТЬ ЗАКАЗ',empty:'Пока пусто. Добавьте блюда из меню.',empty_err:'Добавьте хотя бы одно блюдо.',done:'Заказ принят. Мы свяжемся с вами для подтверждения.',foot:'Бронь столов и доставка по звонку',ru:'Русская',it:'Итальянская','Все':'Все','Закуски':'Закуски','Супы':'Супы','Горячее':'Горячее','Десерты':'Десерты','Паста':'Паста','Пицца':'Пицца',zones:['Главный зал','Бар шефа','Приват'],occs:['Свидание','День рождения','Бизнес','Без повода'],unit:'г',lang:'EN'},
+en:{nav_menu:'Menu',nav_book:'Book',nav_gift:'Gift card',nav_club:'Club',order:'Order',hero_sub:'RUSSIAN AND ITALIAN CUISINE',hero_go:'OPEN THE MENU',menu_h:'Two tables. One story of taste.',menu_s:'Pick a cuisine and build your evening. Every dish comes with a drink pairing.',pair:'Pair with',glass:'+ glass',book_h:'Book a table',b_date:'Date',b_time:'Time',b_guests:'Guests',b_zone:'Seating',b_occ:'Occasion',b_name:'Your name',b_phone:'Phone',b_err:'Enter your name and phone.',b_ok:'We will confirm the 5,000 ₽ deposit in the messenger.',b_tg:'TO TELEGRAM',b_wa:'TO WHATSAPP',gift_h:'Gift certificate',g_amt:'Amount',g_to:'For',g_msg:'Message',g_add:'ADD TO ORDER',g_def:'With love, for a good dinner.',g_for:'For',g_set:'Chef’s Evening set',g_item:'Gift certificate',club_h:'Private club',club_s:'First to hear about new sets and dinners. No spam.',club_ph:'Email or @telegram',club_btn:'JOIN',club_ok:'You are on the list. The first announcement is on its way.',club_err:'Enter an email or @telegram.',cart:'Your order',total:'Total',checkout:'PLACE ORDER',empty:'Nothing here yet. Add dishes from the menu.',empty_err:'Add at least one dish.',done:'Order received. We will contact you to confirm.',foot:'Table reservations and delivery by phone',ru:'Russian',it:'Italian','Все':'All','Закуски':'Starters','Супы':'Soups','Горячее':'Mains','Десерты':'Desserts','Паста':'Pasta','Пицца':'Pizza',zones:['Main hall','Chef’s bar','Private room'],occs:['Date night','Birthday','Business','Just because'],unit:'g',lang:'RU'}
+};
+const DATA=RAW.map((r,i)=>({id:i+1,c:r[0],t:r[1],ru:r[2],en:EN[i],d:r[3],w:r[4],p:r[5],dr:PR[i][0],dp:+PR[i][1]}));
+let L='ru',cat='ru',tag='Все',cart=[],bk={d:0,t:'20:30',g:2,z:0,o:0},gf={a:5000,set:false};
+const t=k=>T[L][k],$=id=>document.getElementById(id),fmt=n=>n.toLocaleString(L==='ru'?'ru-RU':'en-US')+' ₽';
+const sv=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}},ld=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+
+let df={g:0,l:0,v:0,s:0};
+function render(){
+  const items=DATA.filter(x=>x.c===cat),tags=['Все',...new Set(items.map(x=>x.t))];
+  $('cuis').innerHTML=['ru','it'].map(k=>`<button class="cui ${k===cat?'on':''}" onclick="cat='${k}';tag='Все';render()">${t(k)}</button>`).join('');
+  $('tags').innerHTML=tags.map(g=>`<button class="tag ${g===tag?'on':''}" onclick="tag='${g}';render()">${t(g)}</button>`).join('');
+  $('diets').innerHTML=['g','l','v','s'].map(k=>`<button class="chip ${df[k]?'on':''}" onclick="df.${k}=!df.${k};render()">${t('df_'+k)}</button>`).join('');
+  $('dnote').textContent=Object.values(df).some(Boolean)?t('d_note'):'';
+  const shown=items.filter(x=>(!df.g||x.g)&&(!df.l||x.l)&&(!df.v||x.v)&&(!df.s||x.s));
+  const groups=[...new Set(shown.map(x=>x.t))].filter(g=>tag==='Все'||g===tag);
+  $('list').innerHTML=groups.map(g=>`<div class="group"><h3>${t(g)}</h3>${shown.filter(x=>x.t===g).map(x=>`<div class="dish ${x.stop?'stop':''}"><h4>${x[L]}</h4><span class="price">${x.stop?t('stop'):fmt(x.p)}</span><button class="add" onclick="addDish(${x.id},this)" aria-label="+">+</button>${L==='ru'?`<p>${x.d}</p>`:''}<span class="w">${L==='ru'?x.w:x.w.replace('г','g')}</span><div class="pair">${t('pair')}: <b>${x.dr}</b> ${fmt(x.dp)}<button onclick="addDrink(${x.id})">${t('glass')}</button></div></div>`).join('')}</div>`).join('')||`<p class="note">—</p>`;
+}
+function put(o){const f=cart.find(x=>x.id===o.id);f?f.q++:cart.push({...o,q:1});$('msg').textContent='';upd()}
+function addDish(id,b){const x=DATA.find(d=>d.id===id);put({id:'d'+id,p:x.p,ru:x.ru,en:x.en});if(b){b.classList.add('ok');setTimeout(()=>b.classList.remove('ok'),500)}}
+function addDrink(id){const x=DATA.find(d=>d.id===id);put({id:'w'+id,p:x.dp,ru:x.dr,en:x.dr})}
+function chg(id,d){const i=cart.findIndex(x=>x.id===id);cart[i].q+=d;if(cart[i].q<=0)cart.splice(i,1);upd()}
+const dl={km:3,t:0},fee=sub=>sub>=8000?0:250+40*dl.km;
+function calc(){const sub=cart.reduce((a,x)=>a+x.p*x.q,0),del=$('dlv')&&$('dlv').checked,f=del&&sub>0?fee(sub):0;return{sub,del,fee:f,total:sub+f}}
+function upd(){
+  const c=calc();
+  $('cnt').textContent=cart.reduce((a,x)=>a+x.q,0);
+  $('tot').textContent=fmt(c.total);
+  $('dfee').textContent=c.del?(c.fee?fmt(c.fee):t('free')):'';
+  $('clist').innerHTML=cart.length?cart.map(x=>`<div class="c-item"><div><b>${x[L]}</b><small>${fmt(x.p*x.q)}</small></div><div class="qty"><button class="q" onclick="chg('${x.id}',-1)">−</button><span>${x.q}</span><button class="q" onclick="chg('${x.id}',1)">+</button></div></div>`).join(''):`<p class="empty">${t('empty')}</p>`;
+}
+function toggleCart(){$('modal').classList.toggle('open')}
+function order(){
+  if(!cart.length){$('msg').textContent=t('empty_err');return}
+  const c=calc();
+  if(c.del&&!$('daddr').value.trim()){$('msg').textContent=t('dv_err');return}
+  pay(c.total,()=>{
+    LY.pts+=Math.round(c.total*(LY.spent>=30000?.1:.05));LY.spent+=c.total;sv('ms_loy',JSON.stringify(LY));drawLoy();
+    cart=[];upd();track(c.del)
+  })
+}
+
+const days=[...Array(5)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()+i+1);return d});
+const chips=(arr,cur,fn)=>arr.map((a,i)=>`<button class="chip ${i===cur?'on':''}" onclick="${fn}(${i})">${a}</button>`).join('');
+function drawBook(){
+  const loc=L==='ru'?'ru-RU':'en-GB',times=['19:00','20:30','22:00'];
+  $('bdate').innerHTML=chips(days.map(d=>d.toLocaleDateString(loc,{weekday:'short',day:'numeric',month:'short'})),bk.d,'sb.d');
+  $('btime').innerHTML=chips(times,times.indexOf(bk.t),'sb.t');
+  $('bzone').innerHTML=chips(t('zones'),bk.z,'sb.z');
+  $('bocc').innerHTML=chips(t('occs'),bk.o,'sb.o');
+  $('bgn').textContent=bk.g;
+}
+const sb={d:i=>{bk.d=i;drawBook()},t:i=>{bk.t=['19:00','20:30','22:00'][i];drawBook()},z:i=>{bk.z=i;drawBook()},o:i=>{bk.o=i;drawBook()}};
+function bg(d){bk.g=Math.min(12,Math.max(1,bk.g+d));drawBook()}
+function sendBook(k){
+  const n=$('bname').value.trim(),p=$('bphone').value.trim();
+  if(!n||!p){$('bnote').textContent=t('b_err');return}
+  const loc=L==='ru'?'ru-RU':'en-GB',txt=`MIROSLIME\n${days[bk.d].toLocaleDateString(loc,{weekday:'long',day:'numeric',month:'long'})}, ${bk.t}\n${t('b_guests')}: ${bk.g}\n${t('zones')[bk.z]}, ${t('occs')[bk.o]}\n${n}, ${p}\n${t('b_paid')}`;
+  pay(5000,()=>{window.open(k==='tg'?'https://t.me/share/url?url=%20&text='+encodeURIComponent(txt):'https://wa.me/?text='+encodeURIComponent(txt),'_blank');$('bnote').textContent=t('b_ok')});
+}
+
+const AM=[3000,5000,10000];
+function drawGift(){
+  $('gchips').innerHTML=AM.map(a=>`<button class="chip ${!gf.set&&gf.a===a?'on':''}" onclick="gf={a:${a},set:false};drawGift()">${fmt(a)}</button>`).join('')+`<button class="chip ${gf.set?'on':''}" onclick="gf={a:7900,set:true};drawGift()">${t('g_set')}, ${fmt(7900)}</button>`;
+  gdraw();
+}
+function gdraw(){
+  $('gamt').textContent=fmt(gf.a);
+  const n=$('gname').value.trim(),m=$('gtext').value.trim();
+  $('gto').textContent=n?`${t('g_for')} ${n}`:(gf.set?t('g_set'):'');
+  $('gm').textContent=m||t('g_def');
+}
+function gadd(){const n=$('gname').value.trim(),a=gf.set?`${T.ru.g_set}`:`${T.ru.g_item}`,b=gf.set?T.en.g_set:T.en.g_item;put({id:'g'+gf.a+gf.set+n,p:gf.a,ru:a+(n?`, ${n}`:''),en:b+(n?`, ${n}`:'')});toggleCart()}
+
+function join(){
+  const v=$('cmail').value.trim();
+  if(!/^(@\w{3,}|[^@\s]+@[^@\s]+\.[^@\s]+)$/.test(v)){$('cnote').textContent=t('club_err');return}
+  sv('ms_club',v);$('cnote').textContent=t('club_ok');$('cmail').value='';
+}
+
+function applyLang(){
+  document.documentElement.lang=L;
+  document.querySelectorAll('[data-i]').forEach(e=>e.textContent=t(e.dataset.i));
+  document.querySelectorAll('[data-ph]').forEach(e=>e.placeholder=t(e.dataset.ph));
+  $('langb').textContent=t('lang');
+  render();upd();drawBook();drawGift();drawAll();
+}
+function toggleLang(){L=L==='ru'?'en':'ru';sv('ms_lang',L);applyLang()}
+function toggleTheme(){const d=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=d;sv('ms_theme',d)}
+
+Object.assign(T.ru,{df_g:'Без глютена',df_l:'Без лактозы',df_v:'Вегетарианское',df_s:'Острое',d_note:'Отметки ориентировочные. Об аллергиях скажите официанту.',stop:'Стоп',free:'бесплатно',
+bd_h:'Собери ужин',bd_s:'Гости и бюджет на гостя, остальное подберём мы.',bd_c:'Кухня',bd_b:'Бюджет на гостя',bd_again:'ДРУГОЙ ВАРИАНТ',bd_add:'ДОБАВИТЬ В ЗАКАЗ',bd_tot:'На всех',bd_none:'Бюджет мал для полного ужина. Увеличьте его.',bd_s1:'Закуска',bd_m:'Горячее',bd_d:'Десерт',bd_w:'Напиток',
+b_ics:'В КАЛЕНДАРЬ',b_paid:'Депозит 5 000 ₽ оплачен.',ev_h:'Афиша',ev_go:'ЗАПИСАТЬСЯ',ev_ics:'В календарь',ev_left:'мест',
+dv_h:'Доставка',dv_addr:'Адрес',dv_km:'Расстояние, км',dv_time:'Когда',dv_fee:'Стоимость доставки',dv_free:'Бесплатно при заказе от 8 000 ₽',dl_on:'Доставка',dv_err:'Введите адрес доставки.',dv_times:['Как можно скорее','Через час','Через 2 часа','Вечером, 20:00'],
+rv_h:'Отзывы',rv_rate:'Оценка',rv_text:'Ваш отзыв',rv_photo:'Фото',rv_send:'ОПУБЛИКОВАТЬ',rv_err:'Введите имя и отзыв.',
+ly_pts:'баллов',ly_to:'До Black осталось',ly_max:'Максимальный уровень',ly_note:'5% баллами с каждого заказа, на Black 10%.',
+pay_h:'Оплата',pay_demo:'Демо: деньги не списываются. Для реальных платежей нужен провайдер (ЮKassa, Stripe).',pay_card:'Номер карты',pay_exp:'ММ/ГГ',pay_cvc:'CVC',pay_btn:'ОПЛАТИТЬ',pay_err:'Проверьте данные карты.',
+ad_h:'Админка',ad_pin:'PIN',ad_in:'ВОЙТИ',ad_bad:'Неверный PIN.',ad_note:'Правки сохраняются только в этом браузере. Для всех гостей нужен сервер.',ad_reset:'СБРОСИТЬ',ad_exp:'КОПИРОВАТЬ JSON',st_d:['Принят','Готовим','В пути','Доставлен'],st_p:['Принят','Готовим','Готов к выдаче']});
+Object.assign(T.en,{df_g:'Gluten-free',df_l:'Lactose-free',df_v:'Vegetarian',df_s:'Spicy',d_note:'Labels are approximate. Tell the waiter about any allergy.',stop:'Sold out',free:'free',
+bd_h:'Build your dinner',bd_s:'Guests and budget per guest, we pick the rest.',bd_c:'Cuisine',bd_b:'Budget per guest',bd_again:'ANOTHER OPTION',bd_add:'ADD TO ORDER',bd_tot:'For everyone',bd_none:'Budget is too small for a full dinner. Raise it.',bd_s1:'Starter',bd_m:'Main',bd_d:'Dessert',bd_w:'Drink',
+b_ics:'ADD TO CALENDAR',b_paid:'Deposit of 5,000 ₽ paid.',ev_h:'Events',ev_go:'SIGN UP',ev_ics:'Add to calendar',ev_left:'seats',
+dv_h:'Delivery',dv_addr:'Address',dv_km:'Distance, km',dv_time:'When',dv_fee:'Delivery fee',dv_free:'Free on orders from 8,000 ₽',dl_on:'Delivery',dv_err:'Enter a delivery address.',dv_times:['As soon as possible','In 1 hour','In 2 hours','Tonight, 8 pm'],
+rv_h:'Reviews',rv_rate:'Rating',rv_text:'Your review',rv_photo:'Photo',rv_send:'PUBLISH',rv_err:'Enter your name and a review.',
+ly_pts:'points',ly_to:'Left to Black',ly_max:'Top level',ly_note:'5% back in points on every order, 10% on Black.',
+pay_h:'Payment',pay_demo:'Demo: no money is charged. Real payments need a provider (Stripe, YooKassa).',pay_card:'Card number',pay_exp:'MM/YY',pay_cvc:'CVC',pay_btn:'PAY',pay_err:'Check the card details.',
+ad_h:'Admin',ad_pin:'PIN',ad_in:'SIGN IN',ad_bad:'Wrong PIN.',ad_note:'Changes are saved in this browser only. A server is needed for all guests.',ad_reset:'RESET',ad_exp:'COPY JSON',st_d:['Received','Cooking','On the way','Delivered'],st_p:['Received','Cooking','Ready for pickup']});
+
+const jp=(k,d)=>{try{return JSON.parse(ld(k))||d}catch(e){return d}},esc=x=>x.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])),PIN='1234';
+const ids=a=>new Set(a);
+const SV=ids([7,11,20,21,22,23,24,25,26,29,36,37,39,41,46,47,48,49,50,51]),SG=ids([5,7,16,17,18,27,28,29,30,31,32,44,45,48,50]),SL=ids([3,4,5,9,26,28,30,31,44]),SS=ids([10,32]);
+let ov=jp('ms_ov',{p:{},s:{}});
+DATA.forEach(x=>{x.v=SV.has(x.id);x.g=SG.has(x.id);x.l=SL.has(x.id);x.s=SS.has(x.id);if(ov.p[x.id])x.p=ov.p[x.id];x.stop=!!ov.s[x.id]});
+let LY=jp('ms_loy',{spent:0,pts:0});
+
+let AC,snd=false,pad,lastDish=null;
+function mkPad(){const g=AC.createGain();g.gain.value=0;g.gain.linearRampToValueAtTime(.05,AC.currentTime+3);const f=AC.createBiquadFilter();f.type='lowpass';f.frequency.value=700;f.connect(g);g.connect(AC.destination);
+ const os=[110,164.8,220,277.2].map((hz,i)=>{const o=AC.createOscillator();o.type=i%2?'sine':'triangle';o.frequency.value=hz;o.detune.value=i*4;o.connect(f);o.start();return o});
+ const l=AC.createOscillator(),lg=AC.createGain();l.frequency.value=.08;lg.gain.value=300;l.connect(lg);lg.connect(f.frequency);l.start();
+ return{stop(){g.gain.cancelScheduledValues(AC.currentTime);g.gain.setValueAtTime(g.gain.value,AC.currentTime);g.gain.linearRampToValueAtTime(0,AC.currentTime+1);setTimeout(()=>{os.forEach(o=>o.stop());l.stop()},1100)}}}
+function toggleSound(){snd=!snd;$('snd').style.opacity=snd?1:.5;if(snd){AC=AC||new(window.AudioContext||window.webkitAudioContext)();AC.resume();pad=mkPad()}else if(pad)pad.stop()}
+function clink(){const t0=AC.currentTime;[2093,3136].forEach((hz,i)=>{const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=hz;g.gain.setValueAtTime(.0001,t0);g.gain.exponentialRampToValueAtTime(.06/(i+1),t0+.01);g.gain.exponentialRampToValueAtTime(.0001,t0+1.2);o.connect(g);g.connect(AC.destination);o.start(t0);o.stop(t0+1.3)})}
+document.addEventListener('mouseover',e=>{const d=e.target.closest&&e.target.closest('.dish');if(d&&d!==lastDish&&snd)clink();lastDish=d});
+
+function putN(o,n){const f=cart.find(x=>x.id===o.id);f?f.q+=n:cart.push({...o,q:n});upd()}
+let bd={g:2,b:3500,c:'ru',pick:null};
+function mkDinner(){
+  const P=x=>x.c===bd.c&&!x.stop,S=DATA.filter(x=>P(x)&&x.t==='Закуски'),M=DATA.filter(x=>P(x)&&['Горячее','Паста','Пицца'].includes(x.t)),D=DATA.filter(x=>P(x)&&x.t==='Десерты'),all=[];
+  S.forEach(a=>M.forEach(m=>D.forEach(d=>{const tot=a.p+m.p+d.p+m.dp;if(tot<=bd.b)all.push({s:a,m,d,tot})})));
+  all.sort((a,b)=>b.tot-a.tot);return all.length?all[Math.floor(Math.random()*Math.min(5,all.length))]:null}
+const brow=(a,b,c)=>`<div class="dish" style="grid-template-columns:1fr auto"><div><div style="font-size:.8rem;color:var(--mute)">${a}</div><h4>${b}</h4></div><span class="price" style="grid-column:2">${fmt(c)}</span></div>`;
+function drawBuild(){
+  $('bdg').textContent=bd.g;
+  $('bdb').innerHTML=[2000,3500,5000,8000].map(b=>`<button class="chip ${b===bd.b?'on':''}" onclick="bd.b=${b};bd.pick=null;drawBuild()">${fmt(b)}</button>`).join('');
+  $('bdc').innerHTML=['ru','it'].map(k=>`<button class="chip ${k===bd.c?'on':''}" onclick="bd.c='${k}';bd.pick=null;drawBuild()">${t(k)}</button>`).join('');
+  if(!bd.pick)bd.pick=mkDinner();const p=bd.pick;
+  $('bdr').innerHTML=p?[['bd_s1',p.s],['bd_m',p.m],['bd_d',p.d]].map(([r,x])=>brow(t(r),x[L],x.p)).join('')+brow(t('bd_w'),p.m.dr,p.m.dp)+`<div class="tot" style="margin-top:20px"><span>${t('bd_tot')} (${bd.g})</span><span>${fmt(p.tot*bd.g)}</span></div><button class="cta" style="margin-top:0" onclick="bdAdd()">${t('bd_add')}</button>`:`<p class="note">${t('bd_none')}</p>`;
+}
+function bdg(d){bd.g=Math.min(8,Math.max(1,bd.g+d));drawBuild()}
+function bdAdd(){const p=bd.pick;[p.s,p.m,p.d].forEach(x=>putN({id:'d'+x.id,p:x.p,ru:x.ru,en:x.en},bd.g));putN({id:'w'+p.m.id,p:p.m.dp,ru:p.m.dr,en:p.m.dr},bd.g);toggleCart()}
+
+function ics(title,d,min){const p=n=>String(n).padStart(2,'0'),f=x=>`${x.getFullYear()}${p(x.getMonth()+1)}${p(x.getDate())}T${p(x.getHours())}${p(x.getMinutes())}00`,e=new Date(d.getTime()+min*6e4);
+  const c=`BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//MIROSLIME//EN\r\nBEGIN:VEVENT\r\nUID:${Date.now()}@miroslime\r\nDTSTAMP:${f(new Date())}\r\nDTSTART:${f(d)}\r\nDTEND:${f(e)}\r\nSUMMARY:${title}\r\nEND:VEVENT\r\nEND:VCALENDAR`;
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/calendar'}));a.download='miroslime.ics';a.click()}
+function bookIcs(){const [h,m]=bk.t.split(':'),d=new Date(days[bk.d]);d.setHours(+h,+m,0,0);ics('MIROSLIME',d,120)}
+
+const EV=[{id:1,d:'2026-12-05T20:00',ru:'Дегустационный вечер: Россия и Италия',en:'Tasting night: Russia meets Italy',p:6900,s:12},{id:2,d:'2026-12-12T21:00',ru:'Живая музыка: джаз и бокал вина',en:'Live music: jazz and a glass of wine',p:2500,s:30},{id:3,d:'2026-12-19T15:00',ru:'Мастер-класс шефа: пельмени и паста',en:'Chef masterclass: pelmeni and pasta',p:4500,s:10}];
+let EG=jp('ms_ev',[]);
+function drawEvents(){const loc=L==='ru'?'ru-RU':'en-GB';$('evl').innerHTML=EV.map(e=>{const r=EG.includes(e.id);return `<div class="dish"><h4>${e[L]}</h4><span class="price">${fmt(e.p)}</span><button class="chip ${r?'on':''}" style="grid-column:3;grid-row:1" onclick="evTap(${e.id})">${t(r?'ev_ics':'ev_go')}</button><p>${new Date(e.d).toLocaleString(loc,{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})}</p><span class="w">${e.s-(r?1:0)} ${t('ev_left')}</span></div>`}).join('')}
+function evTap(id){const e=EV.find(x=>x.id===id);if(EG.includes(id))ics(e[L],new Date(e.d),180);else{EG.push(id);sv('ms_ev',JSON.stringify(EG));drawEvents()}}
+
+function drawDel(){$('dkmv').textContent=dl.km;$('dfeev').textContent=fmt(250+40*dl.km);$('dtime').innerHTML=chips(t('dv_times'),dl.t,'setDt');upd()}
+function setDt(i){dl.t=i;drawDel()}
+function track(del){const st=t(del?'st_d':'st_p');let i=0;const draw=()=>{$('msg').innerHTML='<div class="trk">'+st.map((x,j)=>`<span class="${j<=i?'on':''}">${j<=i?'●':'○'} ${x}</span>`).join('')+'</div>'};draw();const iv=setInterval(()=>{if(++i>=st.length)return clearInterval(iv);draw()},4000)}
+
+let payCb=null;
+function pay(a,cb){payCb=cb;$('payamt').textContent=fmt(a);$('perr').textContent='';$('pay').classList.add('open')}
+function payClose(){$('pay').classList.remove('open');['pcard','pexp','pcvc'].forEach(i=>$(i).value='')}
+function payGo(){const c=$('pcard').value.replace(/\s/g,'');if(!/^\d{16}$/.test(c)||!/^\d\d\/\d\d$/.test($('pexp').value)||!/^\d{3}$/.test($('pcvc').value)){$('perr').textContent=t('pay_err');return}const f=payCb;payClose();f&&f()}
+
+const SEED=[{n:'Анна',s:5,x:'Борщ и оссобуко: отдельный спектакль.'},{n:'Marco',s:5,x:'Best carbonara outside Rome.'},{n:'Игорь',s:4,x:'Атмосфера и подача на высоте.'}];
+let UR=jp('ms_rev',[]),rs=5,rph='';
+function drawRev(){
+  $('rst').innerHTML=[1,2,3,4,5].map(i=>`<button class="chip ${i===rs?'on':''}" onclick="rs=${i};drawRev()">${i} ★</button>`).join('');
+  $('rvl').innerHTML=[...UR,...SEED].map(r=>`<div class="rev">${r.ph?`<img src="${r.ph}" alt="">`:`<div class="av">${esc(r.n[0])}</div>`}<div><div class="st">${'★'.repeat(r.s)}</div>${esc(r.n)}<div style="color:var(--mute);margin-top:4px;line-height:1.5">${esc(r.x)}</div></div></div>`).join('');
+}
+function pickPh(i){const f=i.files[0];if(!f)return;const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas'),k=Math.min(1,240/Math.max(im.width,im.height));c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);rph=c.toDataURL('image/jpeg',.7)};im.src=fr.result};fr.readAsDataURL(f)}
+function pubRev(){const n=$('rname').value.trim(),x=$('rtext').value.trim();if(!n||!x){$('rnote').textContent=t('rv_err');return}UR.unshift({n,s:rs,x,ph:rph});sv('ms_rev',JSON.stringify(UR.slice(0,20)));rph='';$('rname').value=$('rtext').value=$('rfile').value='';$('rnote').textContent='';drawRev()}
+
+function drawLoy(){const bl=LY.spent>=30000;$('loy').innerHTML=`<span class="br">${bl?'BLACK':'SILVER'}</span><div><div class="amt" style="font-size:4.2rem">${LY.pts}</div><div class="m">${t('ly_pts')}</div></div><div><div class="bar"><i style="width:${Math.min(100,LY.spent/300)}%"></i></div><div class="m">${bl?t('ly_max'):t('ly_to')+' '+fmt(30000-LY.spent)}</div><div class="m">${t('ly_note')}</div></div>`}
+
+let adm=false;
+function drawAdmin(){$('adb').innerHTML=adm?`<table class="adt">${DATA.map(x=>`<tr><td>${x[L]}</td><td><input type="number" value="${x.p}" onchange="adP(${x.id},this.value)"></td><td><label><input type="checkbox" ${x.stop?'checked':''} onchange="adS(${x.id},this.checked)"> ${t('stop')}</label></td></tr>`).join('')}</table><button class="cta alt" style="margin-top:0" onclick="navigator.clipboard&&navigator.clipboard.writeText(JSON.stringify(ov))">${t('ad_exp')}</button><button class="cta alt" style="margin-top:0" onclick="ov={p:{},s:{}};sv('ms_ov','{}');location.reload()">${t('ad_reset')}</button><p class="note">${t('ad_note')}</p>`:`<input class="fld" id="apin" type="password" placeholder="${t('ad_pin')}" style="max-width:240px"><button class="cta" onclick="adLogin()">${t('ad_in')}</button><p class="note" id="anote"></p>`}
+function adLogin(){if($('apin').value===PIN){adm=true;drawAdmin()}else $('anote').textContent=t('ad_bad')}
+function adP(id,v){v=+v;if(v>0){ov.p[id]=v;DATA.find(x=>x.id===id).p=v;sv('ms_ov',JSON.stringify(ov));render()}}
+function adS(id,c){c?ov.s[id]=1:delete ov.s[id];DATA.find(x=>x.id===id).stop=c;sv('ms_ov',JSON.stringify(ov));render()}
+function hashAdm(){$('admin').style.display=location.hash==='#admin'?'block':'none'}
+addEventListener('hashchange',hashAdm);
+function drawAll(){drawBuild();drawEvents();drawDel();drawRev();drawLoy();if(!adm)drawAdmin();hashAdm()}
+L=ld('ms_lang')==='en'?'en':'ru';
+document.documentElement.dataset.theme=ld('ms_theme')==='dark'?'dark':'light';
+applyLang();
+</script></body></html>
